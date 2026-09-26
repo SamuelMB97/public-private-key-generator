@@ -67,7 +67,6 @@ def euclidian_rec(a, b, prev_remainder=None):
         return euclidian_rec(remainder, b, prev_remainder=remainder)
 
 
-
 def public_private_keys():
     ## STEP 1
     p, q = get_starting_primes()
@@ -91,10 +90,38 @@ def public_private_keys():
         public_private_keys()
 
     ## STEP 5
-    #print(euclidian_rec(n, e))
+    intercept = pow(e, -1, phi)
+    print(f"intercept: {intercept}")
+    num = 0
+
+    d = phi*num + intercept
+    return ((e, n), d)
+
+
+def encode(num, e, n):
+    return (num ** e) % n
+
+def decode(num, d, n):
+    return (num ** d) % n
+
+
+def testit(num, e, n, d):
+    secret = encode(num, e, n)
+    decoded = decode(secret, d, n)
+    passes = decoded == num
+    print(f"num: {num}, secret: {secret}, decoded: {decoded}, correct: {passes}")
+    return passes
+
 
 def main():
-    public_private_keys()
+    public, private = public_private_keys()
+    e = public[0]
+    n = public[1]
+    d = private
+    
+    numbers = [259, 1895, 5532, 112, 5, 66, 23, 288]
+    scores = [testit(t, e, n, d) for t in numbers]
+    print(scores)
 
 
 
